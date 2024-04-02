@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quote</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+        integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+            #particles-js{
+                display: inline;
+                min-width: 100%;
+                color: #fff;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                height: 100vh;
+            
+                background-image: url(bg3.jpg);
+                /* background-size: 100%; */
+                background-position: center;
+                background-repeat: no-repeat;
+                background: linear-gradient(135, rgba(255, 255, 255, 0), rgba(255,255,255,0));
+            }
+            .glass{
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0px 8px 32px 0px rgba(0, 0, 0, 0.37);
+            max-width: 90%;
+            }
+            .wrapper{
+                width: 605px;
+                border-radius: 10px;
+                padding: 30px 30px 25px;
+                position: fixed;
+            }
+            .wrapper>header{
+                font-size: 35px;
+                font-weight: 600;
+                text-align: center;
+            }
+            .contents{
+                margin: 35px 0;
+            }
+            .quote-area{
+                display: flex;
+                justify-content: center;
+            }
+            .quote-area>i{
+                font-size: 15px;
+            }
+            .quote-area>i:first-child{
+                margin: 3px 10px 0 0;
+            }
+            .quote-area>i:last-child{
+                display: flex;
+                align-items: flex-end;
+                margin: 0 0 3px 10px;
+            }
+            .quote{
+                font-size: 22px;
+                text-align: center;
+                word-break: break-all;
+            }
+            .author{
+                display: flex;
+                font-size: 18px;
+                font-style: italic;
+                margin-top: 20px;
+                justify-content: flex-end;
+            }
+            .author>span:first-child{
+                margin: -7px 5px 0 0;
+                font-family: monospace;
+            }
+            .buttons{
+                border-top: 4px solid beige;
+            }
+            .features{
+                display: flex;
+                align-items: center;
+                margin-top: 20px;
+                justify-content: space-between;
+            }
+            .features>ul{
+                display: flex; 
+            }
+            .features>ul>li{
+                list-style: none;
+                margin: 0 5px;
+                height: 47px;
+                width: 47px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: rgb(219, 219, 219);
+                border: 2px solid  rgb(219, 219, 219);
+                border-radius: 50%;
+                cursor: pointer;
+            }
+            .features>button{
+                border: none;
+                outline: none;
+                color: #000000;
+                cursor: pointer;
+                font-style: 16px;
+                padding: 13px 22px;
+                border-radius: 30px;
+                background:  rgb(219, 219, 219);
+            }
+            button.loading{
+                opacity: 0.7;
+                pointer-events: none;
+            }
+            
+
+
+        </style>
+</head>
+<body>
+    <div id="particles-js">
+    <div class="wrapper glass">
+        <header>Quotes of the day</header>
+        <div class="contents">
+            <div class="quote-area">
+                <i class="fa-solid fa-quote-left"></i>
+                <p class="quote">never give up</p>
+                <i class="fa-solid fa-quote-right"></i>
+            </div>
+            <div class="author">
+                <span>__</span>
+                <span class="name">govinda</span>
+            </div>
+        </div>
+        <div class="buttons">
+            <div class="features">
+                <ul>
+                    <li class="sound"><i class="fa-solid fa-volume-high"></i></li>
+                    <li class="copy"><i class="fa-solid fa-copy"></i></li>
+                    <li class="twitter"><i class="fa-brands fa-twitter"></i></li>
+                </ul>
+                <button>New Quote</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+<script>
+    const quoteText=document.querySelector(".quote"),
+    authorName=document.querySelector(".author .name"),
+    quoteBtn=document.querySelector("button"),
+    soundBtn=document.querySelector(".sound"),
+    copyBtn=document.querySelector(".copy"),
+    twitterBtn=document.querySelector(".twitter");
+
+
+    function randomQuote(){
+        quoteBtn.classList.add("loading");
+        quoteBtn.innerText="Loading Quote..."
+        fetch("https://api.quotable.io/random")
+        .then(res => res.json())
+        .then(result =>{
+            console.log(result);
+            quoteText.innerHTML=result.content;
+            authorName.innerHTML=result.author;
+            quoteBtn.innerText="New Quote";
+            quoteBtn.classList.remove("loading");
+        });
+    }
+
+    soundBtn.addEventListener("click",()=>{
+        let utterance=new SpeechSynthesisUtterance(`${quoteText.innerHTML} by ${authorName.innerHTML}`);
+        speechSynthesis.speak(utterance);
+    });
+    copyBtn.addEventListener("click",()=>{
+        navigator.clipboard.writeText(quoteText.innerText);
+    });
+    twitterBtn.addEventListener("click",()=>{
+        let tweetUrl=`https://twitter.com/intent/tweet?url=${quoteText.innerText}`;
+        window.open(tweetUrl,"_blank")
+    });
+
+
+    quoteBtn.addEventListener("click",randomQuote);
+</script>
+<script type="text/javascript" src="particles.js"></script>
+<script type="text/javascript" src="app.js"></script>
+</html>
